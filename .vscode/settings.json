@@ -1,6 +1,6 @@
 {
   "cSpell.allowCompoundWords": true,
-  "cSpell.ignoreRegExpList": ["gl.*"],
+  "cSpell.ignoreRegExpList": ["gl.*", "stb.*"],
   "files.associations": {
     "iostream": "cpp",
     "cmath": "cpp",

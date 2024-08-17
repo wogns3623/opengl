@@ -23,7 +23,7 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  auto window = glfwCreateWindow(800, 600, "First Triangle", NULL, NULL);
+  auto window = glfwCreateWindow(800, 600, "Triangle with shader", NULL, NULL);
 
   if (window == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
