@@ -6,7 +6,8 @@
 #include "common/shader.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void processInput(GLFWwindow *window);
+void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                  int mods);
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id,
                                 GLenum severity, GLsizei length,
                                 const GLchar *message, const void *userParam);
@@ -17,6 +18,8 @@ typedef struct s_texture {
   int height;
   int nr_channels;
 } Texture;
+
+float texture2_alpha = 0.2;
 
 int main() {
   // ==== initialize glfw & opengl ====
@@ -38,6 +41,7 @@ int main() {
 
   glfwMakeContextCurrent(window);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  glfwSetKeyCallback(window, key_callback);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
@@ -168,7 +172,6 @@ int main() {
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
-    processInput(window);
 
     // ==== render section ====
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -181,6 +184,7 @@ int main() {
 
     // use complied shader program
     shader_program.use();
+    shader_program.setFloat("texture2_alpha", texture2_alpha);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -200,9 +204,18 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window) {
-  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                  int mods) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
+  } else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT) {
+    texture2_alpha += 0.01;
+    if (texture2_alpha > 1)
+      texture2_alpha = 1;
+  } else if (key == GLFW_KEY_UP && action == GLFW_REPEAT) {
+    texture2_alpha -= 0.01;
+    if (texture2_alpha < 0)
+      texture2_alpha = 0;
   }
 }
 
