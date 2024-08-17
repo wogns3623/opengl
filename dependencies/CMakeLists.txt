@@ -6,11 +6,6 @@ option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(glfw)
 
 
-# ### GLAD ###
-
-add_library(glad glad/src/glad.c)
-
-
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 else()
