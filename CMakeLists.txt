@@ -1,25 +1,72 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.11)
 project(learn_opengl VERSION 0.1.0 LANGUAGES C CXX)
 
+include(FetchContent)
 
-# Compile external dependencies
-add_subdirectory(dependencies)
+# GLFW
+FetchContent_Declare(
+  glfw
+  GIT_REPOSITORY https://github.com/glfw/glfw.git
+  GIT_TAG 3.3.10
+)
+FetchContent_MakeAvailable(glfw)
 
-include_directories(
-  src/
-  dependencies/glad/include/
-  dependencies/glfw/include/
-  dependencies/stb/
+
+# GLAD
+FetchContent_Declare(
+  glad
+  GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+  GIT_TAG c
 )
 
-add_library(GLAD dependencies/glad/src/glad.c)
+# TODO: FetchContent_MakeAvailable 사용하기
+# https://cmake.org/cmake/help/latest/module/FetchContent.html#overriding-where-to-find-cmakelists-txt
+FetchContent_GetProperties(glad)
+if(NOT glad_POPULATED)
+  FetchContent_Populate(glad)
+endif()
+
+add_library(glad ${glad_SOURCE_DIR}/src/glad.c)
+set_target_properties(glad PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${glad_BINARY_DIR})
+target_include_directories(glad PUBLIC ${glad_SOURCE_DIR}/include/)
+
+
+# STB
+FetchContent_Declare(
+	stb_image
+	GIT_REPOSITORY https://github.com/nothings/stb.git
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+)
+
+FetchContent_GetProperties(stb_image)
+if(NOT stb_image_POPULATED)
+  FetchContent_Populate(stb_image)
+endif()
+
+add_library(stb_image INTERFACE)
+target_include_directories(stb_image INTERFACE ${stb_image_SOURCE_DIR}/)
+
+
+# GLM
+FetchContent_Declare(
+	glm
+	GIT_REPOSITORY https://github.com/g-truc/glm.git
+	GIT_TAG 1.0.1
+)
+FetchContent_MakeAvailable(glm)
+
 
 set(LIBS
   ${OPENGL_LIBRARY}
   glfw
-  GLAD
+  glad
+  glm::glm
+  stb_image
 )
 
+
+include_directories(src/)
 
 file(GLOB COMMON
   "src/common/*.h"

@@ -11,3 +11,7 @@
 - [Glitter](https://github.com/Polytonic/Glitter)
 
   - Reference for the repository & CMake configuration
+
+## TODO
+
+- Prebuild common files
