@@ -118,7 +118,7 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, container.id);
 
     glBindVertexArray(VAO);
-    GLint transform_loc = glGetUniformLocation(shader_program.ID, "transform");
+    GLint transform_loc = glGetUniformLocation(shader_program.id, "transform");
     float time = glfwGetTime();
 
     // transform matrix
@@ -146,7 +146,7 @@ int main() {
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
-  glDeleteProgram(shader_program.ID);
+  glDeleteProgram(shader_program.id);
 
   glfwTerminate();
   return 0;

@@ -18,7 +18,7 @@ private:
   GLuint compile_shader(const char *shader_code, GLenum shader_type);
 
 public:
-  GLuint ID;
+  GLuint id;
 
   Shader(const std::string &vertex_path, const std::string &fragment_path);
 
