@@ -104,6 +104,7 @@ int main() {
   }
   stbi_image_free(container_data);
 
+  // use complied shader program
   shader_program.use();
   shader_program.setInt("texture1", 0);
 
@@ -116,20 +117,25 @@ int main() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, container.id);
 
-    // use complied shader program
-    shader_program.use();
+    glBindVertexArray(VAO);
+    GLint transform_loc = glGetUniformLocation(shader_program.ID, "transform");
+    float time = glfwGetTime();
 
-    // transformation
+    // transform matrix
     glm::mat4 trans = glm::mat4(1.0f);
     trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-    trans =
-        glm::rotate(trans, (float)(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
-    // trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+    trans = glm::rotate(trans, time, glm::vec3(0.0f, 0.0f, 1.0f));
 
-    glUniformMatrix4fv(glGetUniformLocation(shader_program.ID, "transform"), 1,
-                       GL_FALSE, glm::value_ptr(trans));
+    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(trans));
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    glBindVertexArray(VAO);
+    // reset to identity matrix
+    trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+    float scale_factor = sin(time);
+    trans = glm::scale(trans, glm::vec3(scale_factor, scale_factor, 1.0f));
+
+    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(trans));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // ==== end render section ====
 
