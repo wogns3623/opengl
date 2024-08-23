@@ -4,19 +4,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <stb_image.h>
 
 #include "common/init_gl.h"
 #include "common/shader.h"
+#include "common/texture.h"
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods);
-
-typedef struct s_texture {
-  GLuint id;
-  int width;
-  int height;
-  int nr_channels;
-} Texture;
 
 int main() {
   // ==== initialize glfw & opengl ====
@@ -67,46 +62,27 @@ int main() {
   glEnableVertexAttribArray(1);
 
   // ==== load texture ====
-  Texture container;
-  glGenTextures(1, &container.id);
-
-  glActiveTexture(GL_TEXTURE0);
+  stbi_set_flip_vertically_on_load(true);
+  Texture container("./container.jpg", GL_RGB, GL_RGB);
   glBindTexture(GL_TEXTURE_2D, container.id);
-
-  // str is equivalent to xyz
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-  // if you choose GL_CLAMP_TO_BORDER, you should specify a border color
-  // float border_color[] = {1.0, 1.0, 0.0, 1.0};
-  // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
-
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                   GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  // tell stb_image.h to flip loaded texture's on the y-axis.
-  stbi_set_flip_vertically_on_load(true);
-  unsigned char *container_data =
-      stbi_load("./container.jpg", &container.width, &container.height,
-                &container.nr_channels, 0);
-
-  if (container_data) {
-    GLint generate_mipmap_level = 0; // base level
-    GLenum generated_texture_format = GL_RGB, input_data_format = GL_RGB,
-           input_data_type = GL_UNSIGNED_BYTE;
-    glTexImage2D(GL_TEXTURE_2D, generate_mipmap_level, generated_texture_format,
-                 container.width, container.height, 0, input_data_format,
-                 input_data_type, container_data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-  } else {
-    std::cout << "Failed to load texture" << std::endl;
-  }
-  stbi_image_free(container_data);
+  Texture face("./awesomeface.png", GL_RGBA, GL_RGB);
+  glBindTexture(GL_TEXTURE_2D, face.id);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // use complied shader program
   shader_program.use();
   shader_program.setInt("texture1", 0);
+  shader_program.setInt("texture2", 1);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
@@ -116,6 +92,8 @@ int main() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, container.id);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, face.id);
 
     glBindVertexArray(VAO);
     GLint transform_loc = glGetUniformLocation(shader_program.id, "transform");

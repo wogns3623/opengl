@@ -1,10 +1,12 @@
 #include "init_gl.h"
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void GLAPIENTRY debug_message_callback(GLenum source, GLenum type, GLuint id,
-                                       GLenum severity, GLsizei length,
-                                       const GLchar *message,
-                                       const void *userParam);
+static void framebuffer_size_callback(GLFWwindow *window, int width,
+                                      int height);
+static void GLAPIENTRY debug_message_callback(GLenum source, GLenum type,
+                                              GLuint id, GLenum severity,
+                                              GLsizei length,
+                                              const GLchar *message,
+                                              const void *userParam);
 
 GLFWwindow *init_gl(const char *title, int width, int height) {
   // ==== initialize glfw & opengl ====
@@ -40,14 +42,16 @@ GLFWwindow *init_gl(const char *title, int width, int height) {
   return window;
 }
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+static void framebuffer_size_callback(GLFWwindow *window, int width,
+                                      int height) {
   glViewport(0, 0, width, height);
 }
 
-void GLAPIENTRY debug_message_callback(GLenum source, GLenum type, GLuint id,
-                                       GLenum severity, GLsizei length,
-                                       const GLchar *message,
-                                       const void *userParam) {
+static void GLAPIENTRY debug_message_callback(GLenum source, GLenum type,
+                                              GLuint id, GLenum severity,
+                                              GLsizei length,
+                                              const GLchar *message,
+                                              const void *userParam) {
   fprintf(stderr,
           "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
           (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity,
