@@ -15,7 +15,7 @@ void Texture::load_data(const std::string &path,
                  file_data);
     glGenerateMipmap(GL_TEXTURE_2D);
   } else {
-    std::cout << "Failed to load texture" << std::endl;
+    std::cout << "Failed to load texture: " << path << std::endl;
   }
 
   stbi_image_free(file_data);

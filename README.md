@@ -14,4 +14,6 @@
 
 ## TODO
 
-- Prebuild common files
+- [ ] Prebuild common files
+- [ ] local resource path getter
+  - see https://github.com/JoeyDeVries/LearnOpenGL/blob/master/includes/learnopengl/filesystem.h
