@@ -136,8 +136,8 @@ int main() {
   // ==== load texture done ====
 
   shader_program.use();
-  shader_program.setInt("texture1", 0);
-  shader_program.setInt("texture2", 1);
+  shader_program.set_int("texture1", 0);
+  shader_program.set_int("texture2", 1);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
@@ -156,13 +156,13 @@ int main() {
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
     glm::mat4 projection = glm::mat4(1.0f);
-    projection =
-        glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-    glUniformMatrix4fv(glGetUniformLocation(shader_program.id, "view"), 1,
-                       GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(shader_program.id, "projection"), 1,
-                       GL_FALSE, glm::value_ptr(projection));
+    float fov = glm::radians(45.0f), aspect_ratio = 800.0f / 600.0f,
+          near_plain = 0.1f, far_plain = 100.0f;
+    projection = glm::perspective(fov, aspect_ratio, near_plain, far_plain);
+
+    shader_program.set_mat4("view", view);
+    shader_program.set_mat4("projection", projection);
 
     glBindVertexArray(VAO);
     for (unsigned int i = 0; i < 10; i++) {
@@ -171,8 +171,7 @@ int main() {
       model = glm::translate(model, cubePositions[i]);
       model = glm::rotate(model, time * glm::radians(20.0f * (i + 1)),
                           glm::vec3(0.5f, 1.0f, 0.0f));
-      glUniformMatrix4fv(glGetUniformLocation(shader_program.id, "model"), 1,
-                         GL_FALSE, glm::value_ptr(model));
+      shader_program.set_mat4("model", model);
 
       glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
     }

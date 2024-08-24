@@ -88,8 +88,8 @@ int main() {
   // ==== load texture end ====
 
   shader_program.use();
-  shader_program.setInt("texture1", 0);
-  shader_program.setInt("texture2", 1);
+  shader_program.set_int("texture1", 0);
+  shader_program.set_int("texture2", 1);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
@@ -104,7 +104,7 @@ int main() {
 
     // use complied shader program
     shader_program.use();
-    shader_program.setFloat("texture2_alpha", texture2_alpha);
+    shader_program.set_float("texture2_alpha", texture2_alpha);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

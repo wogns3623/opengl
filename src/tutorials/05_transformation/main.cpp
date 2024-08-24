@@ -81,8 +81,8 @@ int main() {
 
   // use complied shader program
   shader_program.use();
-  shader_program.setInt("texture1", 0);
-  shader_program.setInt("texture2", 1);
+  shader_program.set_int("texture1", 0);
+  shader_program.set_int("texture2", 1);
 
   // main loop
   while (!glfwWindowShouldClose(window)) {
@@ -96,7 +96,6 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, face.id);
 
     glBindVertexArray(VAO);
-    GLint transform_loc = glGetUniformLocation(shader_program.id, "transform");
     float time = glfwGetTime();
 
     // transform matrix
@@ -104,7 +103,7 @@ int main() {
     trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
     trans = glm::rotate(trans, time, glm::vec3(0.0f, 0.0f, 1.0f));
 
-    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(trans));
+    shader_program.set_mat4("transform", trans);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // reset to identity matrix
@@ -113,7 +112,7 @@ int main() {
     float scale_factor = sin(time);
     trans = glm::scale(trans, glm::vec3(scale_factor, scale_factor, 1.0f));
 
-    glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(trans));
+    shader_program.set_mat4("transform", trans);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // ==== end render section ====
 
